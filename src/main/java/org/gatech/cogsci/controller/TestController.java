@@ -35,10 +35,9 @@ public class TestController {
 
         // Get nearby locations
         LatLng location = new LatLng(33.781556,-84.407480); // Intersection at NE corner of gatech
-        String query = "road"; // Search query
-        int radius = 100; // Search radius in meters
-        String type = "point_of_interest"; // Type parameter
-        List<LatLng> locations = getLocations(context, location, query, radius, type);
+        String query = "food"; // Search query
+        int radius = 10; // Search radius in meters
+        List<LatLng> locations = getLocations(context, location, query, radius);
 
         // Turn coordinates into markers
         Markers markers = locationsToMarkers(locations);
@@ -54,7 +53,7 @@ public class TestController {
         return map;
     }
 
-    private List<LatLng> getLocations(GeoApiContext context, LatLng location, String query, int radius, String type){
+    private List<LatLng> getLocations(GeoApiContext context, LatLng location, String query, int radius){
 
         // Create the request
         TextSearchRequest request = new TextSearchRequest(context)
@@ -70,9 +69,7 @@ public class TestController {
             {
                 // Print locations of all places with "point_of_interest" types
                 List<String> list = Arrays.asList(r.types);
-                if(list.contains("point_of_interest")){
                     locations.add(r.geometry.location);
-                }
             }
         } catch(Exception e) {
             System.out.println(e);

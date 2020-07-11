@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Transport-Heat-Map.iml" filepath="$PROJECT_DIR$/.idea/Transport-Heat-Map.iml" />
+      <module fileurl="file://$PROJECT_DIR$/transport-heat-map.iml" filepath="$PROJECT_DIR$/transport-heat-map.iml" />
     </modules>
   </component>
 </project>

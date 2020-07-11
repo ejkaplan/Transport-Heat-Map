@@ -13,7 +13,8 @@ public class HelloController {
     @GetMapping("hello")
     public Map hello() {
         Map<String, String> map = new HashMap<>();
-        map.put("message", "hello");
+        map.put("message 1", "hello");
+        map.put("message 2", "there");
         return map;
     }
 

@@ -5,6 +5,21 @@ script.defer = true;
 script.async = true;
 
 var map;
+var marker;
+
+function placeMarker(location) {
+  if (marker == undefined){
+    marker = new google.maps.Marker({
+      position: location,
+      map: map,
+      animation: google.maps.Animation.DROP,
+    });
+  }
+  else{
+    marker.setPosition(location);
+  }
+}
+
 // Attach your callback function to the `window` object
 window.initMap = function() {
   /* Data points defined as a mixture of WeightedLocation and LatLng objects */
@@ -39,12 +54,10 @@ window.initMap = function() {
   });
   heatmap.setMap(map);
 
-  var marker = new google.maps.Marker({
-    position: sanFrancisco,
-    map: map,
-    title: "hello",
-    draggable: true
+  google.maps.event.addListener(map, 'click', function(event) {
+    placeMarker(event.latLng);
   });
+
 }
 
 // Append the 'script' element to 'head'

@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Transport-Heat-Map" target="1.5" />
+      <module name="Transport-Heat-Map" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

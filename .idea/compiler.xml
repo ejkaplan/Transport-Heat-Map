@@ -12,7 +12,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="transport-heat-map" target="11" />
-      <module name="Transport-Heat-Map" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

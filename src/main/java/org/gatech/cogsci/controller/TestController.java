@@ -26,7 +26,7 @@ public class TestController {
     public Map test() {
         Map<String, String> map = new HashMap<>();
 
-        LatLng location = new LatLng(33.781556,-84.407480);
+        LatLng location = new LatLng(33.781556, -84.407480);
         String query = "trader joes in atlanta";
 
         TextSearchRequest request = PlacesApi.textSearchQuery(context, query, location);

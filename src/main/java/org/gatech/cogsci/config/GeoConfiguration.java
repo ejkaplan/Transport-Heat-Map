@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GeoConfiguration {
 
+    /**
+     * GeoApiContext Object for spring autowiring
+     */
     @Bean("geo")
     GeoApiContext context() {
         return new GeoApiContext.Builder()

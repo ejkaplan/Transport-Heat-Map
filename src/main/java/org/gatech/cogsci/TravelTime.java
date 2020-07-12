@@ -24,7 +24,7 @@ public class TravelTime {
         LatLng[] destinations = getLocations(context, origin, dist, n);
 
         // Get times from origin to locations
-        int[] times = getTimes(context, origin, destinations, mode);
+        long[] times = getTimes(context, origin, destinations, mode);
 
         // Filter locations
         List<List<LatLng>> groupedPoints = groupLocationsByTime(destinations, times, maxTime, sep);
@@ -73,7 +73,7 @@ public class TravelTime {
         return flat;
     }
 
-    private int[] getTimes(GeoApiContext context, LatLng origin, LatLng[] destinations, TravelMode mode){
+    private long[] getTimes(GeoApiContext context, LatLng origin, LatLng[] destinations, TravelMode mode){
 
         // Make request for distance matrix
         DistanceMatrixApiRequest request = new DistanceMatrixApiRequest(context)
@@ -82,13 +82,13 @@ public class TravelTime {
                 .mode(mode);
 
         // Extract integer times
-        int[] times = new int[destinations.length];
+        long[] times = new long[destinations.length];
         try {
             DistanceMatrix response = request.await();
             for (DistanceMatrixRow row : response.rows) {
                 int i = 0;
                 for (DistanceMatrixElement element : row.elements){
-                    times[i] = Integer.parseInt(element.duration.humanReadable.split(" ")[0]);
+                    times[i] = element.duration.inSeconds/60;
                     i++;
                 }
             }
@@ -99,7 +99,7 @@ public class TravelTime {
         return times;
     }
 
-    private List<List<LatLng>> groupLocationsByTime(LatLng[] locations, int[] times, int maxTime, int sep) {
+    private List<List<LatLng>> groupLocationsByTime(LatLng[] locations, long[] times, int maxTime, int sep) {
 
         // Initialize structure to group locations
         List<List<LatLng>> filteredLocations = new ArrayList<>();

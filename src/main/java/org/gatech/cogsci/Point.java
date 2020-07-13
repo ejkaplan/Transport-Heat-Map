@@ -4,16 +4,18 @@ import com.google.maps.model.LatLng;
 public class Point{
 
     private LatLng location;
-    private float weight;
+    private long timeInSeconds;
+    private double weight;
 
-    public Point(LatLng location, float weight){
+    public Point(LatLng location, double weight, long timeInSeconds){
         this.location = location;
         this.weight = weight;
+        this.timeInSeconds = timeInSeconds;
     }
 
     public LatLng getLocation() { return this.location; }
 
-    public float getWeight(){
+    public double getWeight(){
         return this.weight;
     }
 
@@ -21,11 +23,19 @@ public class Point{
         this.location = location;
     }
 
-    public void setWeight(float weight){
+    public void setWeight(double weight){
         this.weight = weight;
     }
 
     public String toString(){
-        return location.toString() + ", " + Float.toString(weight);
+        return location.toString() + ", " + weight;
+    }
+
+    public long getTimeInSeconds() {
+        return timeInSeconds;
+    }
+
+    public void setTimeInSeconds(long timeInSeconds) {
+        this.timeInSeconds = timeInSeconds;
     }
 }

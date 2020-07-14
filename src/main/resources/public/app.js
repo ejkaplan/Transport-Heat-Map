@@ -10,6 +10,7 @@ var markers = [];
 var originLocation;
 var selectedMode = "DRIVING";
 var selectedPlace = "GROCERY_OR_SUPERMARKET";
+var widget = null;
 
 function setMode(mode) {
     selectedMode = mode;
@@ -89,6 +90,13 @@ function getPoints(map, lat, lng, type, mode, radius, maxTime) {
 function displayDefault() {
     var gerogiaAquarium = {
         coords: {
+            // St louis
+            // latitude: 38.600420,
+            // longitude: -90.235566
+            // New York
+            // latitude: 40.744934,
+            // longitude: -73.951381
+            // Atlanta
             latitude: 33.763068,
             longitude: -84.393761
         }
@@ -104,6 +112,17 @@ function displayLocation(position) {
         zoom: 13,
         mapTypeId: 'roadmap'
     });
+
+    if (widget === null) {
+        widget = new walkscore.TravelTimeWidget({
+            map: map,
+            origin: position.coords.latitude + ',' + position.coords.longitude,
+            show: true,
+            mode: walkscore.TravelTime.Mode.DRIVE
+        });
+    } else {
+        widget.setMap(map);
+    }
 
     /* Data points defined as a mixture of WeightedLocation and LatLng objects */
     getPoints(map, position.coords.latitude, position.coords.longitude, selectedPlace, selectedMode, 100, 120)

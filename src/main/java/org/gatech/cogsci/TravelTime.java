@@ -23,7 +23,7 @@ public class TravelTime {
         // Get nearby locations in a grid
         LatLng[] destinations = getLocations(context, origin, dist, n);
 
-        // Get times from origin to locations
+        // Get times from originLocation to locations
         long[] times = getTimes(context, origin, destinations, mode);
 
         // Filter locations

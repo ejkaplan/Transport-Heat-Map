@@ -26,7 +26,7 @@ public class TestTravelTimeController {
         TravelTime tt = new TravelTime(); // Instance of TravelTime Class
         LatLng origin = new LatLng(33.781556,-84.407480); // Starting point, NE corner of GaTech campus
         double dist = 0.02; // Distance increment in latitude and longitude
-        int n = 9; // Length of side for nxn grid with origin in center
+        int n = 9; // Length of side for nxn grid with originLocation in center
         TravelMode mode = TravelMode.WALKING; // Travel mode
         int maxTime = 210; // The max time considered in minutes
         int sep = 30; // The "bin size" for grouping points together in minutes

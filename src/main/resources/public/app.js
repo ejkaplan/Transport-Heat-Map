@@ -4,10 +4,10 @@ script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC3s-gEdeHL7yQNj3
 script.defer = true;
 script.async = false;
 
-var map;
-var marker;
+var map = null;
+var marker = null;
 var markers = [];
-var originLocation;
+var originPoint;
 var selectedMode = "DRIVING";
 var selectedPlace = "GROCERY_OR_SUPERMARKET";
 var widget = null;
@@ -20,21 +20,47 @@ function setPlace(place) {
     selectedPlace = place;
 }
 
-function placeMarker(location) {
-    if (marker == undefined) {
-        marker = new google.maps.Marker({
-            position: location,
-            map: map,
-            animation: google.maps.Animation.DROP,
-        });
-    } else {
-        marker.setPosition(location);
+function getWalkscoreMode() {
+    if (selectedMode === "DRIVING") {
+        return walkscore.TravelTime.Mode.DRIVE;
+    } else if (selectedMode === "WALKING") {
+        return walkscore.TravelTime.Mode.WALK;
+    } else if (selectedMode === "BICYCLING") {
+        return walkscore.TravelTime.Mode.BIKE;
+    } else if (selectedMode === "TRANSIT") {
+        return walkscore.TravelTime.Mode.TRANSIT;
     }
 }
 
 function displayTime(seconds) {
-    var minutes = Math.round(seconds / 60);
+    const minutes = Math.round(seconds / 60);
     return minutes + " minute(s) away.";
+}
+
+function placeInitialMarker(location) {
+    placeMarker(new google.maps.LatLng(location.coords.latitude, location.coords.longitude));
+}
+
+function displayDefault() {
+    const georgiaAquarium = new google.maps.LatLng(33.763068, -84.393761);
+    placeMarker(georgiaAquarium);
+}
+
+function placeMarker(location) {
+    originPoint = location;
+    displayLocation();
+    if (marker === null) {
+        marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            icon: {
+                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+            }
+        });
+    } else {
+        marker.setPosition(location);
+    }
 }
 
 function getPoints(map, lat, lng, type, mode, radius, maxTime) {
@@ -54,12 +80,6 @@ function getPoints(map, lat, lng, type, mode, radius, maxTime) {
             }
             markers = [];
 
-            const currentMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(lat, lng),
-                map: map,
-                label: "Current Location"
-            });
-
             const points = [];
             for (let i = 0; i < data.length; i++) {
                 const latlng = new google.maps.LatLng(data[i].location.lat, data[i].location.lng);
@@ -71,7 +91,7 @@ function getPoints(map, lat, lng, type, mode, radius, maxTime) {
                     content: displayTime(data[i].timeInSeconds)
                 });
 
-                marker.addListener('click', function() {
+                marker.addListener('click', function () {
                     infowindow.open(map, marker);
                 });
 
@@ -87,60 +107,38 @@ function getPoints(map, lat, lng, type, mode, radius, maxTime) {
     });
 }
 
-function displayDefault() {
-    var gerogiaAquarium = {
-        coords: {
-            // St louis
-            // latitude: 38.600420,
-            // longitude: -90.235566
-            // New York
-            // latitude: 40.744934,
-            // longitude: -73.951381
-            // Atlanta
-            latitude: 33.763068,
-            longitude: -84.393761
-        }
-    };
-    displayLocation(gerogiaAquarium);
-}
-
-function displayLocation(position) {
-    originLocation = position;
-    var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: location,
-        zoom: 13,
-        mapTypeId: 'roadmap'
-    });
+function displayLocation() {
+    if (map === null) {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: originPoint,
+            zoom: 13,
+            mapTypeId: 'roadmap'
+        });
+        google.maps.event.addListener(map, 'click', function (event) {
+            placeMarker(event.latLng);
+        });
+    }
 
     if (widget === null) {
         widget = new walkscore.TravelTimeWidget({
             map: map,
-            origin: position.coords.latitude + ',' + position.coords.longitude,
+            origin: originPoint.lat() + ',' + originPoint.lng(),
             show: true,
-            mode: walkscore.TravelTime.Mode.DRIVE
+            mode: getWalkscoreMode()
         });
     } else {
-        widget.setMap(map);
+        widget.setMode(getWalkscoreMode());
+        widget.setOrigin(originPoint.lat() + ',' + originPoint.lng());
     }
 
     /* Data points defined as a mixture of WeightedLocation and LatLng objects */
-    getPoints(map, position.coords.latitude, position.coords.longitude, selectedPlace, selectedMode, 100, 120)
-        .then(function (heatMapData) {
-            var heatmap = new google.maps.visualization.HeatmapLayer({
-                data: heatMapData
-            });
-            heatmap.setMap(map);
-
-            google.maps.event.addListener(map, 'click', function (event) {
-                placeMarker(event.latLng);
-            });
-        });
+    getPoints(map, originPoint.lat(), originPoint.lng(), selectedPlace, selectedMode, 100, 120)
+        .then(function () {});
 }
 
 // Attach your callback function to the `window` object
 window.initMap = function () {
-    navigator.geolocation.getCurrentPosition(displayLocation, displayDefault);
+    navigator.geolocation.getCurrentPosition(placeInitialMarker, displayDefault);
 };
 
 // Append the 'script' element to 'head'
